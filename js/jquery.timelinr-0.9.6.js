@@ -106,7 +106,32 @@ jQuery.fn.timelinr = function(options){
 					$(settings.datesDiv).animate({'marginTop':defaultPositionDates-(heightDate*currentIndex)},{queue:false, duration:'settings.datesSpeed'});
 				}
 			});
-
+		        $(this).bind('mouseover', function(event) {
+			       	if(settings.autoPlay == 'true') {
+			       		settings.autoPlay == 'false';
+					setInterval("autoPlay()", settings.autoPlayPause * 500000);
+				}
+		        	
+		        });
+		        
+		        
+		         $(this).bind('mouseover', function(event) {
+			       	if(settings.autoPlay == 'true') {
+			       		var refreshIntervalId = setInterval("autoPlay()", 10000);
+					clearInterval(refreshIntervalId);
+			       		//setInterval("autoPlay()", settings.autoPlayPause * 500000);
+				}
+		        	
+		        });
+		        
+		        
+		           $(this).bind('mouseover', function(event) {
+			       	if(settings.autoPlay == 'true') {
+			       		setInterval("autoPlay()", settings.autoPlayPause * 500000);
+				}
+		        	
+		        });
+		        
 			$(settings.nextButton).bind('click', function(event){
 				event.preventDefault();
 				// bugixed from 0.9.54: now the dates gets centered when there's too much dates.
