@@ -1,12 +1,12 @@
+
 /* ----------------------------------
 jQuery Timelinr 0.9.55
 tested with jQuery v1.6+
-
 Copyright 2011, CSSLab.cl
 Free under the MIT license.
 http://www.opensource.org/licenses/mit-license.php
-
 instructions: http://www.csslab.cl/2011/08/18/jquery-timelinr/
+Implement onmouseover stop and onmouseout restrart functionality
 ---------------------------------- */
 
 jQuery.fn.timelinr = function(options){
@@ -49,6 +49,7 @@ jQuery.fn.timelinr = function(options){
 			var heightDates = $(settings.datesDiv).height();
 			var widthDate = $(settings.datesDiv+' li').width();
 			var heightDate = $(settings.datesDiv+' li').height();
+			var refreshIntervalId = null;
 			// set positions!
 			if(settings.orientation == 'horizontal') {
 				$(settings.issuesDiv).width(widthIssue*howManyIssues);
@@ -106,31 +107,22 @@ jQuery.fn.timelinr = function(options){
 					$(settings.datesDiv).animate({'marginTop':defaultPositionDates-(heightDate*currentIndex)},{queue:false, duration:'settings.datesSpeed'});
 				}
 			});
-		        $(this).bind('mouseover', function(event) {
-			       	if(settings.autoPlay == 'true') {
-			       		settings.autoPlay == 'false';
-					setInterval("autoPlay()", settings.autoPlayPause * 500000);
+
+		    $(this).find(settings.containerDiv).bind('mouseover', function(event) {
+				if(settings.autoPlay == 'true') {
+					if(refreshIntervalId){
+						clearInterval(refreshIntervalId);
+						refreshIntervalId = null;
+					}
 				}
-		        	
-		        });
+			});
 		        
-		        
-		         $(this).bind('mouseover', function(event) {
-			       	if(settings.autoPlay == 'true') {
-			       		var refreshIntervalId = setInterval("autoPlay()", 10000);
-					clearInterval(refreshIntervalId);
-			       		//setInterval("autoPlay()", settings.autoPlayPause * 500000);
+			$(this).find(settings.containerDiv).bind('mouseout', function(event) {
+				if(settings.autoPlay == 'true') {
+					if(!refreshIntervalId)
+						refreshIntervalId = setInterval("autoPlay()", settings.autoPlayPause);
 				}
-		        	
-		        });
-		        
-		        
-		           $(this).bind('mouseover', function(event) {
-			       	if(settings.autoPlay == 'true') {
-			       		setInterval("autoPlay()", settings.autoPlayPause * 500000);
-				}
-		        	
-		        });
+			}); 
 		        
 			$(settings.nextButton).bind('click', function(event){
 				event.preventDefault();
@@ -273,7 +265,7 @@ jQuery.fn.timelinr = function(options){
 			$(settings.datesDiv+' li').eq(settings.startAt-1).find('a').trigger('click');
 			// autoPlay, added since 0.9.4
 			if(settings.autoPlay == 'true') {
-				setInterval("autoPlay()", settings.autoPlayPause);
+				var refreshIntervalId = setInterval("autoPlay()", settings.autoPlayPause);
 			}
 		}
 	});
